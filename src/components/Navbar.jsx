@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { Sun, Moon, User, LogOut } from 'lucide-react';
+import { Sun, Moon, User, LogOut, Plus } from 'lucide-react';
 
 const Navbar = () => {
   const { logout, currentUser } = useAuth();
@@ -25,7 +25,11 @@ const Navbar = () => {
       </Link>
       
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-        <button onClick={toggleTheme} className="btn btn-ghost" aria-label="Toggle theme">
+        <button onClick={() => window.dispatchEvent(new CustomEvent('open-add-todo'))} className="btn btn-ghost" title="Create New Todo">
+          <Plus size={20} />
+        </button>
+
+        <button onClick={toggleTheme} className="btn btn-ghost" aria-label="Toggle theme" title="Toggle Theme">
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
         </button>
         

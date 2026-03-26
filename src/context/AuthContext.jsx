@@ -5,7 +5,9 @@ import {
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
-  updatePassword
+  updatePassword,
+  setPersistence,
+  browserSessionPersistence
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
@@ -18,6 +20,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   async function signup(email, password, name) {
+    await setPersistence(auth, browserSessionPersistence);
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     // Create profile document
     await setDoc(doc(db, "users", userCredential.user.uid), {
@@ -28,7 +31,8 @@ export const AuthProvider = ({ children }) => {
     return userCredential;
   }
 
-  function login(email, password) {
+  async function login(email, password) {
+    await setPersistence(auth, browserSessionPersistence);
     return signInWithEmailAndPassword(auth, email, password);
   }
 
@@ -47,6 +51,34 @@ export const AuthProvider = ({ children }) => {
     });
     return unsubscribe;
   }, []);
+
+  // Inactivity Auto-Logout Tracker (15 Minutes)
+  useEffect(() => {
+    let timeoutId;
+    
+    const resetTimer = () => {
+      clearTimeout(timeoutId);
+      if (currentUser) {
+        // Enforce exactly 15 minutes of idle time before severing token
+        timeoutId = setTimeout(() => {
+          logout();
+        }, 15 * 60 * 1000);
+      }
+    };
+
+    if (currentUser) {
+      resetTimer(); 
+      const events = ['click', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+      events.forEach(event => window.addEventListener(event, resetTimer));
+      
+      return () => {
+        clearTimeout(timeoutId);
+        events.forEach(event => window.removeEventListener(event, resetTimer));
+      };
+    }
+    
+    return () => clearTimeout(timeoutId);
+  }, [currentUser]);
 
   const value = {
     currentUser,
