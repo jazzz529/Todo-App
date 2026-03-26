@@ -63,7 +63,7 @@ export default function Login() {
           Need an account? <Link to="/signup" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Sign Up</Link>
         </div>
         <div style={{ textAlign: 'center', marginTop: '1rem', fontSize: '0.8rem', color: 'rgba(107, 114, 128, 0.6)', fontWeight: 500 }}>
-          v1.0.0
+          v2.0.0
         </div>
       </div>
     </div>
