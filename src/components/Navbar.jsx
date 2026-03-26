@@ -20,10 +20,14 @@ const Navbar = () => {
       top: '1rem',
       zIndex: 50
     }}>
-      <Link to="/" style={{ textDecoration: 'none', color: 'inherit', fontSize: '1.25rem', fontWeight: 600 }}>
-        TodoApp
-      </Link>
-      
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit', fontSize: '1.25rem', fontWeight: 600 }}>
+          TodoApp
+        </Link>
+        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-primary)', backgroundColor: 'var(--bg-primary)', padding: '0.2rem 0.5rem', borderRadius: '99px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+          v2.0.0
+        </span>
+      </div>
       <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
         <button onClick={() => window.dispatchEvent(new CustomEvent('open-add-todo'))} className="btn btn-ghost" title="Create New Todo">
           <Plus size={20} />
