@@ -7,13 +7,13 @@ import { getStorage } from "firebase/storage";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyC0gC21n6oQbVs0681uBl_6c5tWFbqFKxM",
+  authDomain: "todo-app-fc8e9.firebaseapp.com",
+  projectId: "todo-app-fc8e9",
+  storageBucket: "todo-app-fc8e9.firebasestorage.app",
+  messagingSenderId: "643997770194",
+  appId: "1:643997770194:web:c03a9f6a9e0f15c224e80b",
+  measurementId: "G-C3MMR2Y3LR"
 };
 
 const app = initializeApp(firebaseConfig);
