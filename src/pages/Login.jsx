@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Login() {
   const emailRef = useRef();
@@ -8,6 +9,7 @@ export default function Login() {
   const { login } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
@@ -34,9 +36,24 @@ export default function Login() {
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Email</label>
             <input type="email" ref={emailRef} required className="input" placeholder="Enter your email" />
           </div>
-          <div>
+          <div style={{ position: 'relative' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Password</label>
-            <input type="password" ref={passwordRef} required className="input" placeholder="Enter your password" />
+            <input 
+               type={showPassword ? "text" : "password"} 
+               ref={passwordRef} required className="input" placeholder="Enter your password" 
+               style={{ width: '100%', paddingRight: '2.5rem' }}
+            />
+            <button 
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              style={{
+                position: 'absolute', right: '0.8rem', top: '2.1rem',
+                background: 'none', border: 'none', cursor: 'pointer',
+                color: 'var(--text-muted)'
+              }}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
           <button disabled={loading} className="btn btn-primary" type="submit" style={{ width: '100%', padding: '0.8rem', marginTop: '0.5rem' }}>
             {loading ? 'Logging in...' : 'Log In'}

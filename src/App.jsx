@@ -16,7 +16,7 @@ const PrivateRoute = ({ children }) => {
 function AppRoutes() {
   const { currentUser } = useAuth();
   return (
-    <>
+    <div style={{ display: 'flow-root', minHeight: '100vh' }}>
       {currentUser && <Navbar />}
       <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
         <Routes>
@@ -26,7 +26,7 @@ function AppRoutes() {
           <Route path="/signup" element={!currentUser ? <Signup /> : <Navigate to="/" />} />
         </Routes>
       </div>
-    </>
+    </div>
   );
 }
 
