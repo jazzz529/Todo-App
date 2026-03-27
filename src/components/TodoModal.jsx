@@ -25,7 +25,7 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
   if (!isOpen) return null;
 
   const handleAddItem = () => setItems([...items, { text: '', done: false }]);
-  
+
   const handleItemChange = (index, value) => {
     const newItems = [...items];
     newItems[index].text = value;
@@ -40,12 +40,12 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
   const handleSave = () => {
     if (!heading.trim() || items.every(i => !i.text.trim())) return;
     const validItems = items.filter(i => i.text.trim() !== '');
-    
+
     const payload = { heading, items: validItems, color };
     if (initialData && initialData.id) {
       payload.id = initialData.id;
     }
-    
+
     onSave(payload);
     onClose();
   };
@@ -58,11 +58,11 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
       zIndex: 9999, padding: '1rem'
     }}>
       <div className="glass animate-fade-in" style={{
-        width: '100%', maxWidth: '500px', 
+        width: '100%', maxWidth: '500px',
         backgroundColor: 'var(--surface-card)',
         borderRadius: '1.5rem',
         border: 'var(--glass-border)',
-        display: 'flex', flexDirection: 'column', 
+        display: 'flex', flexDirection: 'column',
         maxHeight: '85vh',
         color: 'var(--text-primary)',
         overflow: 'hidden' // Root container doesn't scroll
@@ -78,15 +78,15 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
         {/* Scrollable Content Area */}
         <div style={{ padding: '0 2rem 1rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <div>
-            <input 
-              type="text" value={heading} onChange={(e) => setHeading(e.target.value)} 
-              placeholder="Todo Title" 
-              style={{ 
-                width: '100%', fontSize: '2rem', fontWeight: 700, 
-                backgroundColor: 'transparent', color: 'var(--text-primary)', 
+            <input
+              type="text" value={heading} onChange={(e) => setHeading(e.target.value)}
+              placeholder="Todo Title"
+              style={{
+                width: '100%', fontSize: '2rem', fontWeight: 700,
+                backgroundColor: 'transparent', color: 'var(--text-primary)',
                 border: 'none', padding: 0, outline: 'none', boxShadow: 'none',
                 letterSpacing: '-0.03em', fontFamily: "'Space Grotesk', sans-serif"
-              }} 
+              }}
             />
           </div>
 
@@ -96,14 +96,14 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
               if (item.done) return null;
               return (
                 <div key={idx} style={{ display: 'flex', gap: '1rem', alignItems: 'center', padding: '0.5rem 0' }}>
-                  <div 
+                  <div
                     onClick={() => {
                       const newItems = [...items];
                       newItems[idx].done = !newItems[idx].done;
                       setItems(newItems);
                     }}
-                    style={{ 
-                      width: '20px', height: '20px', borderRadius: '50%', 
+                    style={{
+                      width: '20px', height: '20px', borderRadius: '50%',
                       border: item.done ? 'none' : `2px solid ${color || 'var(--border-color)'}`,
                       backgroundColor: item.done ? (color || 'var(--accent-primary)') : 'transparent',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
@@ -112,9 +112,9 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
                   >
                     {item.done && <Check size={12} color="white" strokeWidth={4} />}
                   </div>
-                  <input 
-                    type="text" value={item.text} 
-                    onChange={(e) => handleItemChange(idx, e.target.value)} 
+                  <input
+                    type="text" value={item.text}
+                    onChange={(e) => handleItemChange(idx, e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
@@ -122,10 +122,10 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
                       }
                     }}
                     autoFocus={idx === items.length - 1 && items.length > 1 && item.text === ''}
-                    placeholder={`Todo ${idx + 1}`} 
-                    style={{ 
-                      flex: 1, backgroundColor: 'transparent', color: 'var(--text-primary)', 
-                      border: 'none', padding: 0, outline: 'none', boxShadow: 'none', 
+                    placeholder={`Todo ${idx + 1}`}
+                    style={{
+                      flex: 1, backgroundColor: 'transparent', color: 'var(--text-primary)',
+                      border: 'none', padding: 0, outline: 'none', boxShadow: 'none',
                       fontSize: '1.1rem', fontWeight: 500,
                       textDecoration: item.done ? 'line-through' : 'none',
                       opacity: item.done ? 0.3 : 1
@@ -139,11 +139,11 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
             })}
 
             {/* Persistent Add Item Button */}
-            <button 
+            <button
               onClick={handleAddItem}
-              style={{ 
-                display: 'flex', alignItems: 'center', gap: '0.8rem', 
-                marginTop: '0.5rem', cursor: 'pointer', 
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.8rem',
+                marginTop: '0.5rem', cursor: 'pointer',
                 color: 'var(--text-secondary)', opacity: 0.6,
                 background: 'none', border: 'none', padding: '0.5rem 0',
                 fontSize: '0.9rem', fontWeight: 500, transition: 'opacity 0.2s'
@@ -156,11 +156,11 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
 
             {/* Ticked Section Toggle */}
             {items.some(i => i.done) && (
-              <div 
+              <div
                 onClick={() => setShowTicked(!showTicked)}
-                style={{ 
-                  display: 'flex', alignItems: 'center', gap: '0.8rem', 
-                  marginTop: '1rem', cursor: 'pointer', 
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.8rem',
+                  marginTop: '1rem', cursor: 'pointer',
                   color: 'var(--accent-primary)', opacity: 0.8,
                   fontSize: '0.75rem', fontWeight: 900, textTransform: 'none', letterSpacing: '0.12em'
                 }}
@@ -175,14 +175,14 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
               if (!item.done) return null;
               return (
                 <div key={idx} style={{ display: 'flex', gap: '1rem', alignItems: 'center', padding: '0.5rem 0' }}>
-                  <div 
+                  <div
                     onClick={() => {
                       const newItems = [...items];
                       newItems[idx].done = !newItems[idx].done;
                       setItems(newItems);
                     }}
-                    style={{ 
-                      width: '20px', height: '20px', borderRadius: '50%', 
+                    style={{
+                      width: '20px', height: '20px', borderRadius: '50%',
                       border: item.done ? 'none' : `2px solid ${color || 'var(--border-color)'}`,
                       backgroundColor: item.done ? (color || 'var(--accent-primary)') : 'transparent',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
@@ -191,19 +191,19 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
                   >
                     {item.done && <Check size={12} color="white" strokeWidth={4} />}
                   </div>
-                  <input 
-                    type="text" value={item.text} 
-                    onChange={(e) => handleItemChange(idx, e.target.value)} 
+                  <input
+                    type="text" value={item.text}
+                    onChange={(e) => handleItemChange(idx, e.target.value)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         e.preventDefault();
                         handleAddItem();
                       }
                     }}
-                    placeholder={`Todo ${idx + 1}`} 
-                    style={{ 
-                      flex: 1, backgroundColor: 'transparent', color: 'var(--text-primary)', 
-                      border: 'none', padding: 0, outline: 'none', boxShadow: 'none', 
+                    placeholder={`Todo ${idx + 1}`}
+                    style={{
+                      flex: 1, backgroundColor: 'transparent', color: 'var(--text-primary)',
+                      border: 'none', padding: 0, outline: 'none', boxShadow: 'none',
                       fontSize: '1.1rem', fontWeight: 500,
                       textDecoration: item.done ? 'line-through' : 'none',
                       opacity: item.done ? 0.3 : 1
@@ -222,8 +222,8 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
         <div style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--surface-card)', border: 'none', gap: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <div style={{ fontSize: '0.75rem', fontWeight: 900, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Color</div>
-            <input 
-              type="color" 
+            <input
+              type="color"
               value={color || '#818cf8'}
               onChange={(e) => setColor(e.target.value)}
               className="color-picker"
@@ -246,7 +246,7 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
             )}
           </div>
 
-          <button onClick={handleSave} className="btn-primary" style={{ 
+          <button onClick={handleSave} className="btn-primary" style={{
             backgroundColor: 'var(--accent-primary)',
             borderRadius: '9999px',
             border: 'none',
