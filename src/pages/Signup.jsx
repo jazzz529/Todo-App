@@ -35,21 +35,21 @@ export default function Signup() {
   }
 
   return (
-    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="glass animate-fade-in" style={{ padding: '2rem', width: '100%', maxWidth: '400px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', fontSize: '2rem' }}>Sign Up</h2>
-        {error && <div style={{ color: 'var(--accent-danger)', backgroundColor: 'rgba(239,68,68,0.1)', padding: '0.8rem', borderRadius: '0.5rem', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+    <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Roboto, sans-serif' }}>
+      <div className="glass" style={{ padding: '2.5rem', width: '100%', maxWidth: '420px', backgroundColor: 'var(--surface-card)', border: 'var(--glass-border)' }}>
+        <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1.8rem', fontWeight: 900, letterSpacing: '-0.05em' }}>Sign Up</h2>
+        {error && <div style={{ color: 'var(--accent-danger)', backgroundColor: 'rgba(248,81,73,0.1)', padding: '0.8rem', borderRadius: '0.5rem', marginBottom: '1.2rem', textAlign: 'center', fontSize: '0.9rem' }}>{error}</div>}
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Name</label>
+            <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Name</label>
             <input type="text" ref={nameRef} required className="input" placeholder="Your name" />
           </div>
           <div>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Email</label>
+            <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email</label>
             <input type="email" ref={emailRef} required className="input" placeholder="Your email" />
           </div>
           <div style={{ position: 'relative' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Password</label>
+            <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Password</label>
             <input 
               type={showPassword ? "text" : "password"} 
               ref={passwordRef} required className="input" placeholder="Create a password" 
@@ -59,16 +59,16 @@ export default function Signup() {
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               style={{
-                position: 'absolute', right: '0.8rem', top: '2.1rem',
+                position: 'absolute', right: '1rem', top: '2.4rem',
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: 'var(--text-muted)'
+                color: 'var(--text-secondary)', opacity: 0.5
               }}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
           <div style={{ position: 'relative' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Confirm Password</label>
+            <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Confirm Password</label>
             <input 
                type={showConfirmPassword ? "text" : "password"} 
                ref={passwordConfirmRef} required className="input" placeholder="Confirm password" 
@@ -78,20 +78,20 @@ export default function Signup() {
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               style={{
-                position: 'absolute', right: '0.8rem', top: '2.1rem',
+                position: 'absolute', right: '1rem', top: '2.4rem',
                 background: 'none', border: 'none', cursor: 'pointer',
-                color: 'var(--text-muted)'
+                color: 'var(--text-secondary)', opacity: 0.5
               }}
             >
               {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
-          <button disabled={loading} className="btn btn-primary" type="submit" style={{ width: '100%', padding: '0.8rem', marginTop: '0.5rem' }}>
+          <button disabled={loading} className="btn btn-primary" type="submit" style={{ width: '100%', padding: '1rem', marginTop: '0.5rem', borderRadius: '9999px' }}>
             {loading ? 'Signing up...' : 'Sign Up'}
           </button>
         </form>
-        <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-          Already have an account? <Link to="/login" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 600 }}>Log In</Link>
+        <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
+          Already have an account? <Link to="/login" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 700, marginLeft: '0.4rem' }}>Log In</Link>
         </div>
       </div>
     </div>

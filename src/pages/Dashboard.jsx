@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../services/firebase';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { Plus, Trash2, Pencil, CheckCircle2, Circle } from 'lucide-react';
+import { Plus, Trash2, Pencil, CheckCircle2, Circle, Check } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import TodoModal from '../components/TodoModal';
 
@@ -101,9 +101,9 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ paddingBottom: '5rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1 style={{ margin: 0, fontSize: '2.5rem' }}>My Dashboard</h1>
+    <div className="animate-fade-in" style={{ paddingBottom: '5rem', fontFamily: 'Roboto, sans-serif' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+        <h1 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 700, color: 'var(--text-primary)', letterSpacing: '-0.04em', fontFamily: "'Space Grotesk', sans-serif" }}>My Dashboard</h1>
       </div>
 
       {errorMsg && (
@@ -120,51 +120,103 @@ export default function Dashboard() {
       ) : (
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
-          gap: '1.5rem',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', 
+          gap: '1.25rem',
           alignItems: 'start'
         }}>
-          {todos.map(todo => (
-            <div key={todo.id} className={todo.color ? "animate-fade-in" : "glass animate-fade-in"} style={{ 
-              backgroundColor: todo.color || undefined, 
-              color: todo.color ? '#1e1e24' : 'var(--text-primary)', 
-              borderRadius: todo.color ? '1.5rem' : undefined,
-              padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem',
-              transition: 'transform 0.2s ease', 
-              cursor: 'default',
-              boxShadow: todo.color ? '0 10px 15px -3px rgba(0, 0, 0, 0.1)' : undefined
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <h3 style={{ margin: 0, fontSize: '1.5rem', wordBreak: 'break-word', flex: 1 }}>{todo.heading}</h3>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <button onClick={() => openEditModal(todo)} className="btn-ghost" style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: todo.color ? 'rgba(0,0,0,0.5)' : 'var(--text-secondary)', padding: '0.2rem' }} title="Edit List">
-                    <Pencil size={18} />
-                  </button>
-                  <button onClick={() => setTodoToDelete(todo)} className="btn-ghost" style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: todo.color ? 'rgba(0,0,0,0.5)' : 'var(--text-secondary)', padding: '0.2rem' }} title="Delete List">
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginTop: '0.5rem' }}>
-                {todo.items.map((item, idx) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }} onClick={() => toggleItemDone(todo.id, idx)}>
-                    <div style={{ color: item.done ? 'var(--accent-success)' : (todo.color ? 'rgba(0,0,0,0.4)' : 'var(--text-secondary)'), display: 'flex', alignItems: 'center' }}>
-                      {item.done ? <CheckCircle2 size={20} /> : <Circle size={20} />}
-                    </div>
-                    <span style={{ 
-                      textDecoration: item.done ? 'line-through' : 'none', 
-                      opacity: item.done ? 0.6 : 1,
-                      wordBreak: 'break-word',
-                      flex: 1,
-                      fontSize: '1.05rem'
-                    }}>
-                      {item.text}
-                    </span>
+          {todos.map(todo => {
+            const itemsWithIndex = todo.items.map((item, originalIndex) => ({ ...item, originalIndex }));
+            const uncheckedItems = itemsWithIndex.filter(i => !i.done);
+            const checkedItems = itemsWithIndex.filter(i => i.done);
+            
+            // Prioritize unchecked, then fill up to 3 items with checked ones for density
+            const displayItems = [...uncheckedItems, ...checkedItems].slice(0, 3);
+            const remainingCount = todo.items.length - displayItems.length;
+
+            return (
+              <div key={todo.id} className="glass animate-fade-in" style={{ 
+                backgroundColor: 'var(--surface-card)', 
+                color: 'var(--text-primary)', 
+                padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem',
+                transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border 0.3s ease', 
+                cursor: 'default',
+                border: 'var(--glass-border)',
+                boxShadow: todo.color ? `0 10px 25px ${todo.color}15` : 'var(--shadow-md)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                {todo.color && (
+                  <div style={{ 
+                    position: 'absolute', top: 0, left: 0, right: 0, 
+                    height: '5px', backgroundColor: todo.color,
+                    zIndex: 10
+                  }} />
+                )}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, wordBreak: 'break-word', flex: 1, letterSpacing: '-0.02em', lineHeight: 1.15, fontFamily: "'Space Grotesk', sans-serif" }}>{todo.heading}</h3>
+                  <div style={{ display: 'flex', gap: '0.1rem' }}>
+                    <button onClick={() => openEditModal(todo)} className="card-action-btn" style={{ color: todo.color || 'var(--accent-primary)' }} title="Edit Todo">
+                      <Pencil size={15} />
+                    </button>
+                    <button onClick={() => setTodoToDelete(todo)} className="card-action-btn" style={{ color: todo.color || 'var(--accent-primary)' }} title="Delete Todo">
+                      <Trash2 size={15} />
+                    </button>
                   </div>
-                ))}
+                </div>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  {displayItems.map((item) => (
+                    <div key={item.originalIndex} style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', cursor: 'pointer' }} onClick={() => toggleItemDone(todo.id, item.originalIndex)}>
+                      <div
+                        className={item.done ? 'tick-pop' : ''}
+                        style={{ 
+                          width: '18px', height: '18px', borderRadius: '50%', 
+                          border: item.done ? 'none' : `2px solid ${todo.color || 'var(--border-color)'}`,
+                          backgroundColor: item.done ? (todo.color || 'var(--accent-primary)') : 'transparent',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
+                        }}
+                      >
+                        {item.done && <Check size={10} color="white" strokeWidth={4} />}
+                      </div>
+                      <span style={{ 
+                        textDecoration: item.done ? 'line-through' : 'none', 
+                        opacity: item.done ? 0.5 : 1, /* Increased contrast */
+                        wordBreak: 'break-word',
+                        flex: 1,
+                        fontSize: '0.9rem',
+                        fontWeight: 500,
+                        color: item.done ? 'var(--text-disabled)' : 'inherit'
+                      }}>
+                        {item.text}
+                      </span>
+                    </div>
+                  ))}
+                  {remainingCount > 0 && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', paddingLeft: '1.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      + {remainingCount}
+                    </div>
+                  )}
+                </div>
+
+                {checkedItems.length > 0 && (
+                  <div style={{ 
+                    marginTop: 'auto', 
+                    paddingTop: '0.8rem', 
+                    borderTop: '1px solid var(--border-color)',
+                    fontSize: '0.75rem',
+                    color: todo.color || 'var(--accent-primary)',
+                    fontWeight: 900,
+                    textTransform: 'none',
+                    letterSpacing: '0.12em',
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}>
+                    +{checkedItems.length} ticked ToDos
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
