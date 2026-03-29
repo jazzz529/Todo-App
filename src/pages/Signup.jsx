@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Sun, Moon } from 'lucide-react';
 
 export default function Signup() {
   const nameRef = useRef();
@@ -9,11 +10,13 @@ export default function Signup() {
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
   const { signup } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -36,7 +39,19 @@ export default function Signup() {
 
   return (
     <div style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Roboto, sans-serif' }}>
-      <div className="glass" style={{ padding: '2.5rem', width: '100%', maxWidth: '420px', backgroundColor: 'var(--surface-card)', border: 'var(--glass-border)' }}>
+      <div className="glass animate-fade-in" style={{ padding: '2.5rem', width: '100%', maxWidth: '420px', backgroundColor: 'var(--surface-card)', border: 'var(--glass-border)', position: 'relative' }}>
+        <button 
+          onClick={toggleTheme} 
+          className="btn-ghost" 
+          style={{ 
+            position: 'absolute', top: '1.2rem', right: '1.2rem', 
+            padding: '0.4rem', border: 'none', background: 'transparent', cursor: 'pointer',
+            color: 'var(--text-secondary)', opacity: 0.6
+          }} 
+          title="Toggle Theme"
+        >
+          {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
         <h2 style={{ textAlign: 'center', marginBottom: '2rem', fontSize: '1.8rem', fontWeight: 900, letterSpacing: '-0.05em' }}>Sign Up</h2>
         {error && <div style={{ color: 'var(--accent-danger)', backgroundColor: 'rgba(248,81,73,0.1)', padding: '0.8rem', borderRadius: '0.5rem', marginBottom: '1.2rem', textAlign: 'center', fontSize: '0.9rem' }}>{error}</div>}
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
@@ -92,6 +107,15 @@ export default function Signup() {
         </form>
         <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
           Already have an account? <Link to="/login" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 700, marginLeft: '0.4rem' }}>Log In</Link>
+        </div>
+        
+        {/* Version Badge */}
+        <div style={{ 
+          position: 'absolute', bottom: '0.8rem', left: '50%', transform: 'translateX(-50%)',
+          fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-secondary)',
+          opacity: 0.5, letterSpacing: '0.05em'
+        }}>
+          v3.0.3
         </div>
       </div>
     </div>

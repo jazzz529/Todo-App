@@ -47,18 +47,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav style={{
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '0.8rem 2.5rem',
-      backgroundColor: 'var(--bg-secondary)',
-      borderBottom: '1px solid var(--border-color)',
-      position: 'sticky',
-      top: 0,
-      zIndex: 50,
-      width: '100%'
-    }}>
+    <nav className="nav-container">
       {/* Logo */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', cursor: 'pointer' }} onClick={() => navigate('/')}>
         <div style={{
@@ -70,7 +59,6 @@ const Navbar = () => {
           <CheckCircle2 size={20} />
         </div>
         <span style={{ fontSize: '1.4rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.03em', fontFamily: 'Roboto, sans-serif' }}>TodoApp</span>
-        <span style={{ fontSize: '0.7rem', fontWeight: 800, backgroundColor: 'var(--surface-card)', padding: '0.2rem 0.5rem', borderRadius: '1rem', border: 'var(--glass-border)', color: 'var(--text-secondary)', marginLeft: '0.2rem' }}>v3.0.0</span>
       </div>
 
       {/* Right icons — all equal 36×36 */}

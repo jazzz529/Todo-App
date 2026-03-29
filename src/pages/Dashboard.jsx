@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../services/firebase';
 import { collection, query, where, onSnapshot, addDoc, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { Plus, Trash2, Pencil, CheckCircle2, Circle, Check } from 'lucide-react';
+import { Plus, Trash2, Pencil, CheckCircle2, Circle, Check, Pin } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import TodoModal from '../components/TodoModal';
 
@@ -32,7 +32,11 @@ export default function Dashboard() {
         id: doc.id,
         ...doc.data()
       }));
-      setTodos(todosData.sort((a, b) => b.createdAt - a.createdAt));
+      setTodos(todosData.sort((a, b) => {
+        // Sort by Pinned (true first), then by CreatedAt (descending)
+        if (a.pinned !== b.pinned) return b.pinned ? 1 : -1;
+        return b.createdAt - a.createdAt;
+      }));
     }, (error) => {
       console.error("Firestore snapshot error:", error);
       setErrorMsg(error.message); // Explicitly display Firebase rules failure
@@ -71,6 +75,18 @@ export default function Dashboard() {
     } catch (err) {
       console.error("Save error:", err);
       alert("Failed to save: " + err.message);
+    }
+  };
+
+  const togglePin = async (todoId) => {
+    try {
+      const todo = todos.find(t => t.id === todoId);
+      if (!todo) return;
+      await updateDoc(doc(db, 'todos', todoId), {
+        pinned: !todo.pinned
+      });
+    } catch (err) {
+      alert("Failed to pin: " + err.message);
     }
   };
 
@@ -141,7 +157,7 @@ export default function Dashboard() {
                 transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease, border 0.3s ease', 
                 cursor: 'default',
                 border: 'var(--glass-border)',
-                boxShadow: todo.color ? `0 10px 25px ${todo.color}15` : 'var(--shadow-md)',
+                boxShadow: 'var(--shadow-md)',
                 position: 'relative',
                 overflow: 'hidden'
               }}>
@@ -154,11 +170,19 @@ export default function Dashboard() {
                 )}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, wordBreak: 'break-word', flex: 1, letterSpacing: '-0.02em', lineHeight: 1.15, fontFamily: "'Space Grotesk', sans-serif" }}>{todo.heading}</h3>
-                  <div style={{ display: 'flex', gap: '0.1rem' }}>
-                    <button onClick={() => openEditModal(todo)} className="card-action-btn" style={{ color: todo.color || 'var(--accent-primary)' }} title="Edit Todo">
+                  <div style={{ display: 'flex', gap: '0.1rem', alignItems: 'center' }}>
+                    <button 
+                      onClick={() => togglePin(todo.id)} 
+                      className={`card-action-btn ${todo.pinned ? 'pinned-active' : ''}`} 
+                      style={{ color: 'var(--accent-primary)', opacity: todo.pinned ? 1 : 0.4 }} 
+                      title={todo.pinned ? "Unpin Todo" : "Pin Todo"}
+                    >
+                      <Pin size={15} fill={todo.pinned ? "currentColor" : "none"} style={{ transform: todo.pinned ? 'rotate(0deg)' : 'rotate(-45deg)', transition: 'transform 0.3s ease' }} />
+                    </button>
+                    <button onClick={() => openEditModal(todo)} className="card-action-btn" style={{ color: 'var(--accent-primary)' }} title="Edit Todo">
                       <Pencil size={15} />
                     </button>
-                    <button onClick={() => setTodoToDelete(todo)} className="card-action-btn" style={{ color: todo.color || 'var(--accent-primary)' }} title="Delete Todo">
+                    <button onClick={() => setTodoToDelete(todo)} className="card-action-btn" style={{ color: 'var(--accent-primary)' }} title="Delete Todo">
                       <Trash2 size={15} />
                     </button>
                   </div>
@@ -171,9 +195,10 @@ export default function Dashboard() {
                         className={item.done ? 'tick-pop' : ''}
                         style={{ 
                           width: '18px', height: '18px', borderRadius: '50%', 
-                          border: item.done ? 'none' : `2px solid ${todo.color || 'var(--border-color)'}`,
-                          backgroundColor: item.done ? (todo.color || 'var(--accent-primary)') : 'transparent',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
+                          border: item.done ? 'none' : `2px solid var(--accent-primary)`,
+                          backgroundColor: item.done ? 'var(--accent-primary)' : 'transparent',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+                          flexShrink: 0
                         }}
                       >
                         {item.done && <Check size={10} color="white" strokeWidth={4} />}
@@ -204,7 +229,7 @@ export default function Dashboard() {
                     paddingTop: '0.8rem', 
                     borderTop: '1px solid var(--border-color)',
                     fontSize: '0.75rem',
-                    color: todo.color || 'var(--accent-primary)',
+                    color: 'var(--accent-primary)',
                     fontWeight: 900,
                     textTransform: 'none',
                     letterSpacing: '0.12em',
