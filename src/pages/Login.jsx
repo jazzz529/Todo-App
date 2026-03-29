@@ -76,6 +76,15 @@ export default function Login() {
         <div style={{ textAlign: 'center', marginTop: '2rem', fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
           Need an account? <Link to="/signup" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 700, marginLeft: '0.4rem' }}>Sign Up</Link>
         </div>
+        
+        {/* Version Badge */}
+        <div style={{ 
+          position: 'absolute', bottom: '0.8rem', left: '50%', transform: 'translateX(-50%)',
+          fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-secondary)',
+          opacity: 0.5, letterSpacing: '0.05em'
+        }}>
+          v3.0.3
+        </div>
       </div>
     </div>
   );

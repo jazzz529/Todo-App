@@ -10,6 +10,7 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
 
   useEffect(() => {
     if (isOpen) {
+      document.body.style.overflow = 'hidden';
       if (initialData) {
         setHeading(initialData.heading || '');
         setItems(initialData.items && initialData.items.length > 0 ? initialData.items : [{ text: '', done: false }]);
@@ -19,7 +20,10 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
         setItems([{ text: '', done: false }]);
         setColor('');
       }
+    } else {
+      document.body.style.overflow = 'unset';
     }
+    return () => { document.body.style.overflow = 'unset'; };
   }, [isOpen, initialData]);
 
   if (!isOpen) return null;
@@ -58,7 +62,7 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
       zIndex: 9999, padding: '1rem'
     }}>
       <div className="glass animate-fade-in" style={{
-        width: '100%', maxWidth: '500px',
+        width: '95%', maxWidth: '500px',
         backgroundColor: 'var(--surface-card)',
         borderRadius: '1.5rem',
         border: 'var(--glass-border)',
@@ -77,7 +81,7 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
 
         {/* Scrollable Content Area */}
         <div style={{ padding: '0 2rem 1rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <div>
+          <div style={{ borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>
             <input
               type="text" value={heading} onChange={(e) => setHeading(e.target.value)}
               placeholder="Todo Title"
@@ -104,10 +108,11 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
                     }}
                     style={{
                       width: '20px', height: '20px', borderRadius: '50%',
-                      border: item.done ? 'none' : `2px solid ${color || 'var(--border-color)'}`,
-                      backgroundColor: item.done ? (color || 'var(--accent-primary)') : 'transparent',
+                      border: item.done ? 'none' : `2px solid var(--accent-primary)`,
+                      backgroundColor: item.done ? 'var(--accent-primary)' : 'transparent',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                      flexShrink: 0
                     }}
                   >
                     {item.done && <Check size={12} color="white" strokeWidth={4} />}
@@ -183,10 +188,11 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
                     }}
                     style={{
                       width: '20px', height: '20px', borderRadius: '50%',
-                      border: item.done ? 'none' : `2px solid ${color || 'var(--border-color)'}`,
-                      backgroundColor: item.done ? (color || 'var(--accent-primary)') : 'transparent',
+                      border: item.done ? 'none' : `2px solid var(--accent-primary)`,
+                      backgroundColor: item.done ? 'var(--accent-primary)' : 'transparent',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer',
-                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                      flexShrink: 0
                     }}
                   >
                     {item.done && <Check size={12} color="white" strokeWidth={4} />}
@@ -219,31 +225,59 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
         </div>
 
         {/* Footer - Fixed */}
-        <div style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--surface-card)', border: 'none', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div style={{ fontSize: '0.75rem', fontWeight: 900, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Color</div>
-            <input
-              type="color"
-              value={color || '#818cf8'}
-              onChange={(e) => setColor(e.target.value)}
-              className="color-picker"
-              title="Card Accent Color"
-            />
-            {color && (
-              <button
-                onClick={() => setColor('')}
-                title="Remove color"
-                style={{
-                  background: 'none', border: '1px solid var(--border-color)',
-                  borderRadius: '6px', cursor: 'pointer',
-                  color: 'var(--text-secondary)', fontSize: '0.72rem',
-                  fontWeight: 700, padding: '0.3rem 0.6rem',
-                  letterSpacing: '0.04em', transition: 'all 0.2s'
+        <div style={{ padding: '1.5rem 2rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--surface-card)', border: 'none', gap: '1.25rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', flex: 1, minWidth: '200px' }}>
+            <div style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Pinboard Color</div>
+            <div className="swatch-container">
+              {[
+                { name: 'None', val: '' },
+                { name: 'Indigo', val: '#818cf8' },
+                { name: 'Emerald', val: '#10b981' },
+                { name: 'Rose', val: '#f43f5e' },
+                { name: 'Amber', val: '#f59e0b' },
+                { name: 'Sky', val: '#0ea5e9' },
+                { name: 'Violet', val: '#8b5cf6' }
+              ].map((s) => (
+                <div
+                  key={s.val}
+                  onClick={() => setColor(s.val)}
+                  className={`color-swatch ${color === s.val ? 'active' : ''}`}
+                  style={{ 
+                    backgroundColor: s.val || 'transparent',
+                    border: s.val ? 'none' : '1.5px solid var(--text-disabled)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                  title={s.name}
+                >
+                  {color === s.val && <Check size={12} color={s.val ? "white" : "var(--text-disabled)"} strokeWidth={4} />}
+                </div>
+              ))}
+              
+              {/* Custom Color Picker Swatch */}
+              <div
+                className={`color-swatch ${color && !['', '#818cf8', '#10b981', '#f43f5e', '#f59e0b', '#0ea5e9', '#8b5cf6'].includes(color) ? 'active' : ''}`}
+                style={{ 
+                  backgroundColor: (color && !['', '#818cf8', '#10b981', '#f43f5e', '#f59e0b', '#0ea5e9', '#8b5cf6'].includes(color)) ? color : 'transparent',
+                  border: '1.5px solid var(--text-disabled)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  position: 'relative', overflow: 'hidden', flexShrink: 0
                 }}
+                title="Custom Color"
               >
-                ✕ Remove
-              </button>
-            )}
+                {! (color && !['', '#818cf8', '#10b981', '#f43f5e', '#f59e0b', '#0ea5e9', '#8b5cf6'].includes(color)) && <Plus size={14} color="var(--text-disabled)" />}
+                {color && !['', '#818cf8', '#10b981', '#f43f5e', '#f59e0b', '#0ea5e9', '#8b5cf6'].includes(color) && <Check size={12} color="white" strokeWidth={4} />}
+                <input 
+                  type="color" 
+                  value={color || '#818cf8'} 
+                  onChange={(e) => setColor(e.target.value)}
+                  style={{
+                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                    opacity: 0, cursor: 'pointer'
+                  }}
+                />
+              </div>
+            </div>
           </div>
 
           <button onClick={handleSave} className="btn-primary" style={{
@@ -251,8 +285,10 @@ export default function TodoModal({ isOpen, onClose, onSave, initialData }) {
             borderRadius: '9999px',
             border: 'none',
             boxShadow: '0 10px 30px rgba(129, 140, 248, 0.4)',
-            padding: '1rem 2.5rem',
-            color: 'white'
+            padding: '1rem 2rem',
+            color: 'white',
+            flexShrink: 0,
+            fontSize: '0.9rem'
           }}>
             {initialData ? 'Update Todo' : 'Save Todo'}
           </button>
